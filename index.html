@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <title>Smart Biomedical Equipment Management System (SBEMS) · Enterprise Clinical Engineering</title>
+  <meta name="description" content="Enterprise clinical engineering platform for biomedical equipment telemetry, preventive maintenance, calibration assurance, work orders, and department asset lifecycle management.">
+  <meta name="keywords" content="biomedical engineering, clinical equipment management, hospital asset management, medical device calibration, preventive maintenance, NFPA 99, IEC 62353">
+  <meta name="theme-color" content="#0284c7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SBEMS Clinical Ops">
+
+  <!-- Open Graph / Social Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Smart Biomedical Equipment Management System (SBEMS)">
+  <meta property="og:description" content="Centralized hospital engineering platform for real-time equipment telemetry, work orders, calibration certificates, and preventive maintenance compliance.">
+  <meta property="og:site_name" content="St. Jude Health System · Clinical Engineering">
+
+  <!-- Crisp Inline SVG Favicon (Heartbeat Waveform & Medical Cross) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230284c7'/%3E%3Cstop offset='100%25' stop-color='%230ea5e9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%230f172a'/%3E%3Crect width='64' height='64' rx='16' fill='url(%23grad)' opacity='0.15'/%3E%3Cpath d='M6 32h14l4-12 8 26 6-18 4 7 4-3h18' fill='none' stroke='%2338bdf8' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='48' cy='18' r='4' fill='%2310b981'/%3E%3C/svg%3E">
+
+  <!-- Typography: Outfit for headers, Inter for UI text, JetBrains Mono for Asset IDs & Telemetry -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Modern Healthcare Enterprise Design System CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Accessibility Skip Navigation Link -->
+  <a href="#content-container" class="skip-link">Skip to clinical workspace</a>
+
+  <!-- Mobile Drawer Scrim Overlay -->
+  <div id="sidebar-scrim" class="sidebar-scrim" onclick="SBEMS.toggleSidebarMobile()" aria-hidden="true"></div>
+
+  <!-- Clinical Gateway Login & Role Selection Screen -->
+  <div id="login-screen" class="login-screen" role="dialog" aria-modal="true" aria-label="Clinical Gateway Login">
+    <!-- Login Header Bar -->
+    <header class="login-header-bar">
+      <div class="login-brand">
+        <div class="login-brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="login-brand-title">SBEMS <span class="pro-tag">PRO</span></div>
+          <div class="login-brand-sub">St. Jude Health System · Clinical Engineering</div>
+        </div>
+      </div>
+      <div class="login-header-actions">
+        <!-- MongoDB Cluster Live Pill -->
+        <div class="mongo-status-pill" id="login-mongo-pill" onclick="SBEMS.openMongoModal()" title="MongoDB Cluster Status - Click to Configure">
+          <span class="mongo-status-dot"></span>
+          <span id="login-mongo-status-text">MongoDB: Connected</span>
+        </div>
+
+        <!-- Dark/Light Theme Switcher -->
+        <button class="nav-icon-btn" onclick="SBEMS.toggleTheme()" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Login Body Split Wrapper -->
+    <div class="login-body-wrapper">
+      <div class="login-portal-card">
+        <!-- Role-Based Authentication Gateway Card -->
+        <div class="login-auth-panel">
+          <div class="auth-header-wrapper">
+            <h2>Clinical Gateway Login</h2>
+            <p>Select your authorized role to access the corresponding workspace:</p>
+          </div>
+
+          <!-- Interactive Role Selection Grid -->
+          <div class="role-picker-section">
+            <div class="role-picker-label">
+              <span>Select Role Persona:</span>
+              <span class="role-picker-hint">Click card to auto-fill credentials</span>
+            </div>
+
+            <div class="role-cards-grid" id="role-cards-grid">
+              <!-- Administrator Role -->
+              <div class="role-select-card active" data-role="ADMIN" onclick="SBEMS.selectLoginRole('ADMIN')">
+                <div class="role-card-top">
+                  <div class="role-icon-circle" style="color:#8b5cf6;">🏥</div>
+                  <div class="role-check-indicator" id="role-check-ADMIN">✓</div>
+                </div>
+                <div>
+                  <div class="role-card-title">Hospital Administrator</div>
+                  <div class="role-card-user">Dr. Sarah Jenkins</div>
+                  <span class="role-card-scope">Full System CRUD & RBAC</span>
+                </div>
+              </div>
+
+              <!-- Biomedical Engineer Role -->
+              <div class="role-select-card" data-role="ENGINEER" onclick="SBEMS.selectLoginRole('ENGINEER')">
+                <div class="role-card-top">
+                  <div class="role-icon-circle" style="color:#0284c7;">🔧</div>
+                  <div class="role-check-indicator" id="role-check-ENGINEER"></div>
+                </div>
+                <div>
+                  <div class="role-card-title">Biomedical Engineer</div>
+                  <div class="role-card-user">Alex Mercer, CBET</div>
+                  <span class="role-card-scope">Repairs, PM & Calibration</span>
+                </div>
+              </div>
+
+              <!-- Department Staff Role -->
+              <div class="role-select-card" data-role="STAFF" onclick="SBEMS.selectLoginRole('STAFF')">
+                <div class="role-card-top">
+                  <div class="role-icon-circle" style="color:#10b981;">🩺</div>
+                  <div class="role-check-indicator" id="role-check-STAFF"></div>
+                </div>
+                <div>
+                  <div class="role-card-title">Department Staff</div>
+                  <div class="role-card-user">Nurse Elena Rostova (ICU)</div>
+                  <span class="role-card-scope">Ward Assets & Fault Reports</span>
+                </div>
+              </div>
+
+              <!-- Supervisor Role -->
+              <div class="role-select-card" data-role="MANAGEMENT" onclick="SBEMS.selectLoginRole('MANAGEMENT')">
+                <div class="role-card-top">
+                  <div class="role-icon-circle" style="color:#f59e0b;">📊</div>
+                  <div class="role-check-indicator" id="role-check-MANAGEMENT"></div>
+                </div>
+                <div>
+                  <div class="role-card-title">Clinical Supervisor</div>
+                  <div class="role-card-user">Director Marcus Vance</div>
+                  <span class="role-card-scope">Analytics, MTTR & Audits</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Selected Role Preview Banner -->
+          <div class="selected-role-banner" id="selected-role-banner">
+            <div class="selected-role-info">
+              <span class="selected-role-badge admin" id="banner-role-badge">ADMIN</span>
+              <div>
+                <strong id="banner-user-name" style="font-size:0.85rem; color:var(--text-main);">Dr. Sarah Jenkins</strong>
+                <div id="banner-role-dept" style="font-size:0.75rem; color:var(--text-muted);">Hospital Administration · Full Access</div>
+              </div>
+            </div>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--primary-600);" id="banner-scope-pill">Level 4 Clearance</span>
+          </div>
+
+          <!-- Credentials Authentication Form -->
+          <form class="auth-form" id="login-form" onsubmit="SBEMS.handleLogin(event)">
+            <div>
+              <label class="form-label" for="login-email">Authorized Work Email</label>
+              <input type="email" class="form-control" id="login-email" required value="s.jenkins@stjude-health.org" placeholder="user@stjude-health.org">
+            </div>
+
+            <div class="form-group-relative">
+              <label class="form-label" for="login-password">Clinical Passcode</label>
+              <input type="password" class="form-control" id="login-password" required value="Admin@2026" placeholder="Enter security passcode">
+              <button type="button" class="password-toggle-btn" onclick="SBEMS.togglePasswordVisibility('login-password')" title="Toggle password visibility">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="auth-form-options">
+              <label class="checkbox-label">
+                <input type="checkbox" id="remember-session" checked>
+                <span>Remember this terminal session</span>
+              </label>
+              <span class="forgot-link" onclick="SBEMS.showToast('info', 'Security Assistance', 'For passcode resets, contact Clinical IT Metrology Ext. 4100.')">Forgot key?</span>
+            </div>
+
+            <button type="submit" class="btn-login-submit" id="login-submit-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Authorize & Enter Clinical Portal</span>
+            </button>
+          </form>
+
+          <!-- Quick 1-Click Access Strip -->
+          <div class="quick-access-strip">
+            <div class="quick-access-title">
+              <span>Instant 1-Click Demo Access:</span>
+              <span onclick="SBEMS.openMongoModal()" style="color:var(--primary-600); cursor:pointer; text-transform:none;">🍃 MongoDB Hub</span>
+            </div>
+            <div class="quick-role-buttons">
+              <button type="button" class="quick-role-btn" onclick="SBEMS.quickLogin('ADMIN')">
+                <span>🏥</span> Admin (Dr. Jenkins)
+              </button>
+              <button type="button" class="quick-role-btn" onclick="SBEMS.quickLogin('ENGINEER')">
+                <span>🔧</span> Engineer (Alex M.)
+              </button>
+              <button type="button" class="quick-role-btn" onclick="SBEMS.quickLogin('STAFF')">
+                <span>🩺</span> Staff (Nurse Elena)
+              </button>
+              <button type="button" class="quick-role-btn" onclick="SBEMS.quickLogin('MANAGEMENT')">
+                <span>📊</span> Director (M. Vance)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main System App Frame -->
+  <div id="app-container" style="display:none;">
+    <!-- Persistent Sidebar Navigation (Rendered dynamically by SBEMS engine) -->
+    <aside id="sidebar" role="navigation" aria-label="Clinical Operations Navigation"></aside>
+
+    <!-- Main Content Layout Area -->
+    <div id="main-wrapper">
+      <!-- Top Sticky Navigation Bar -->
+      <header id="top-navbar" role="banner"></header>
+
+      <!-- Dynamic Page View Container -->
+      <main id="content-container" role="main" tabindex="-1">
+        <!-- Initial Skeleton Loading State (Replaced instantaneously by SBEMS.init) -->
+        <div class="page-loading-skeleton" id="initial-skeleton-loader">
+          <div class="skeleton-header-pulse">
+            <div class="skeleton-pill"></div>
+            <div class="skeleton-title"></div>
+          </div>
+          <div class="skeleton-kpi-grid">
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+          </div>
+          <div class="skeleton-content-split">
+            <div class="skeleton-box large"></div>
+            <div class="skeleton-box small"></div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Institutional Healthcare System Footer -->
+      <footer id="app-footer" class="app-footer">
+        <div class="footer-left">
+          <div class="footer-brand-badge">
+            <span class="status-pulse-dot"></span>
+            <strong>St. Jude Health System</strong>
+            <span class="footer-divider">·</span>
+            <span>Department of Clinical Engineering & Metrology</span>
+          </div>
+          <p class="footer-regulatory">
+            Standards Compliance: <strong>NFPA 99 (Health Care Facilities)</strong> · <strong>IEC 62353 (Medical Electrical Equipment)</strong> · <strong>ISO 13485:2016 Quality Management</strong>
+          </p>
+        </div>
+        <div class="footer-right">
+          <div class="footer-meta-pill">
+            <span class="telemetry-icon">⚡</span>
+            <span>Telemetry: <strong>Live & Synchronized</strong></span>
+          </div>
+          <div class="footer-version-tag">
+            <span>SBEMS PRO <strong>v2.4.0</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Dedicated Modal Backdrop & Container Mount -->
+  <div id="modal-wrapper" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true"></div>
+
+  <!-- Real-time Toast Alerts Wrapper -->
+  <div id="toast-wrapper" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- SBEMS Core Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
